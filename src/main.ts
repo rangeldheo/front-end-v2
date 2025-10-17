@@ -1,7 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 
-import { Actions } from "@/store/enums/StoreEnums";
 // Importando o Vue Router
 import router from "./router";
 

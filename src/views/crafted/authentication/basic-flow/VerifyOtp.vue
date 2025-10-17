@@ -1,42 +1,44 @@
 <template>
-  <!--begin::Wrapper-->
   <div class="w-lg-500px bg-white rounded shadow-sm p-10 p-lg-15 mx-auto">
     <!--begin::Form-->
     <Form
       class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework"
-      @submit="onSubmitForgotPassword"
-      id="kt_login_password_reset_form"
-      :validation-schema="forgotPassword"
+      @submit="onSubmitVerifyOtp"
+      :validation-schema="verifyOtpSchema"
     >
       <!--begin::Heading-->
       <div class="text-center mb-10">
-        <!--begin::Title-->
-        <h1 class="text-dark mb-3">Forgot Password ?</h1>
-        <!--end::Title-->
-
-        <!--begin::Link-->
+        <h1 class="text-dark mb-3">Validar codigo</h1>
         <div class="text-gray-400 fw-bold fs-4">
-          Enter your email to reset your password.
+          Enviamos um código para o seu e-mail cadastro.
         </div>
-        <!--end::Link-->
       </div>
-      <!--begin::Heading-->
-
-      <!--begin::Input group-->
-      <div class="fv-row mb-10">
+      <!--end::Heading-->
+      <div class="fv-row mb-7">
         <label class="form-label fw-bolder text-gray-900 fs-6">Email</label>
         <Field
-          class="form-control form-control-solid"
-          type="email"
-          placeholder=""
           name="email"
+          type="email"
+          class="form-control form-control-solid"
+          placeholder="Enter your email"
           autocomplete="off"
         />
-        <div class="fv-plugins-message-container">
-          <div class="fv-help-block">
-            <ErrorMessage name="email" />
-          </div>
-        </div>
+        <ErrorMessage name="email" class="text-danger mt-1" />
+      </div>
+
+      <div class="fv-row mb-10">
+        <label class="form-label fw-bolder text-gray-900 fs-6"
+          >Validar código</label
+        >
+        <Field
+          name="otp"
+          type="text"
+          class="form-control form-control-solid"
+          placeholder="Digite seu código"
+          maxlength="6"
+          autocomplete="off"
+        />
+        <ErrorMessage name="otp" class="text-danger mt-1" />
       </div>
       <!--end::Input group-->
 
@@ -45,12 +47,11 @@
         <button
           type="submit"
           ref="submitButton"
-          id="kt_password_reset_submit"
           class="btn btn-lg btn-primary fw-bolder me-4"
         >
-          <span class="indicator-label"> Submit </span>
+          <span class="indicator-label">Validar</span>
           <span class="indicator-progress">
-            Please wait...
+            Por favor aguarde...
             <span
               class="spinner-border spinner-border-sm align-middle ms-2"
             ></span>
@@ -58,66 +59,74 @@
         </button>
 
         <router-link
-          to="/sign-up"
+          to="/forgot-password"
           class="btn btn-lg btn-light-primary fw-bolder"
-          >Cancel</router-link
+          >Voltar</router-link
         >
       </div>
       <!--end::Actions-->
     </Form>
     <!--end::Form-->
   </div>
-  <!--end::Wrapper-->
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { ErrorMessage, Field, Form } from "vee-validate";
-import { useStore } from "vuex";
+import { Form, Field, ErrorMessage } from "vee-validate";
 import * as Yup from "yup";
+import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
-import router from "@/router";
 
 export default defineComponent({
-  name: "password-reset",
+  name: "verify-otp",
   components: {
-    Field,
     Form,
+    Field,
     ErrorMessage,
   },
   setup() {
     const store = useStore();
-
     const submitButton = ref<HTMLButtonElement | null>(null);
 
-    //Create form validation object
-    const forgotPassword = Yup.object().shape({
+    const verifyOtpSchema = Yup.object().shape({
       email: Yup.string().email().required().label("Email"),
+      otp: Yup.string()
+        .required("Code is required")
+        .min(4)
+        .max(10)
+        .label("OTP"),
     });
 
-    //Form submit function
-    const onSubmitForgotPassword = async (values) => {
-      // eslint-disable-next-line
+    const onSubmitVerifyOtp = async (values) => {
       submitButton.value!.disabled = true;
-      // Activate loading indicator
       submitButton.value?.setAttribute("data-kt-indicator", "on");
 
-      // dummy delay
-      // Send login request
-      await store.dispatch(Actions.FORGOT_PASSWORD, values);
+      // Chama a action para validar o OTP
+      await store.dispatch(Actions.VERIFY_OTP, values);
 
       const [errorName] = Object.keys(store.getters.getErrors);
       const error = store.getters.getErrors[errorName];
 
       if (!error) {
-        router.push({ name: "verify-otp", query: { email: values.email } });
+        Swal.fire({
+          text: "Code verified successfully!",
+          icon: "success",
+          confirmButtonText: "Continue",
+          buttonsStyling: false,
+          customClass: {
+            confirmButton: "btn fw-bold btn-light-primary",
+          },
+        }).then(() => {
+          // Redireciona para redefinir senha
+          // (ajuste a rota conforme seu sistema)
+        });
       } else {
         Swal.fire({
           text: error[0],
           icon: "error",
+          confirmButtonText: "Try again",
           buttonsStyling: false,
-          confirmButtonText: "Try again!",
           customClass: {
             confirmButton: "btn fw-bold btn-light-danger",
           },
@@ -125,13 +134,12 @@ export default defineComponent({
       }
 
       submitButton.value?.removeAttribute("data-kt-indicator");
-      // eslint-disable-next-line
-        submitButton.value!.disabled = false;
+      submitButton.value!.disabled = false;
     };
 
     return {
-      onSubmitForgotPassword,
-      forgotPassword,
+      verifyOtpSchema,
+      onSubmitVerifyOtp,
       submitButton,
     };
   },

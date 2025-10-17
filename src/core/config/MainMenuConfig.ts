@@ -16,7 +16,7 @@ const DocMenuConfig = [
     ],
   },
   {
-    heading: "craft",
+    heading: "Menu",
     route: "/crafted",
     pages: [
       {

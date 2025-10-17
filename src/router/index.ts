@@ -263,6 +263,13 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/crafted/authentication/basic-flow/PasswordReset.vue"),
       },
+      {
+        path: "/verify-otp",
+        name: "verify-otp",
+        component: () =>
+          import("@/views/crafted/authentication/basic-flow/VerifyOtp.vue"),
+        props: (route) => ({ email: route.query.email }),
+      },
     ],
   },
   {

@@ -1,22 +1,22 @@
 import LayoutConfigTypes from "@/core/config/LayoutConfigTypes";
 
 const config: LayoutConfigTypes = {
-  themeName: "Metronic",
+  themeName: "Fretou",
   themeVersion: "8.0.38",
   demo: "demo1",
   main: {
     type: "default",
     primaryColor: "#009EF7",
     logo: {
-      dark: "media/logos/logo-1-dark.svg",
-      light: "media/logos/logo-1.svg",
+      dark: "media/logos/logo.png",
+      light: "media/logos/logo.png",
     },
   },
   illustrations: {
     set: "sketchy-1",
   },
   loader: {
-    logo: "media/logos/logo-1-dark.svg",
+    logo: "media/logos/logo.png",
     display: true,
     type: "default",
   },
@@ -42,7 +42,7 @@ const config: LayoutConfigTypes = {
   },
   aside: {
     display: true,
-    theme: "dark",
+    theme: "light",
     fixed: true,
     menuIcon: "svg",
     minimized: false,

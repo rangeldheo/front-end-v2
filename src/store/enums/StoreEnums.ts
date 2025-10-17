@@ -5,13 +5,14 @@ enum Actions {
   ADD_BODY_ATTRIBUTE = "addBodyAttribute",
   REMOVE_BODY_ATTRIBUTE = "removeBodyAttribute",
   ADD_CLASSNAME = "addClassName",
-  VERIFY_AUTH = "verifyAuth",
-  LOGIN = "login",
-  LOGOUT = "logout",
-  REGISTER = "register",
-  UPDATE_USER = "updateUser",
-  FORGOT_PASSWORD = "forgotPassword",
+  VERIFY_AUTH = "auth/verifyAuth",
+  LOGIN = "auth/login",
+  LOGOUT = "auth/logout",
+  REGISTER = "auth/register",
+  UPDATE_USER = "auth/updateUser",
+  FORGOT_PASSWORD = "auth/forgotPassword",
   SET_BREADCRUMB_ACTION = "setBreadcrumbAction",
+  VERIFY_OTP = "auth/verify-otp",
 }
 
 enum Mutations {
