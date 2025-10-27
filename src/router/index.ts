@@ -270,6 +270,13 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/crafted/authentication/basic-flow/VerifyOtp.vue"),
         props: (route) => ({ email: route.query.email }),
       },
+      {
+        path: "/new-password",
+        name: "new-password",
+        component: () =>
+          import("@/views/crafted/authentication/basic-flow/NewPassword.vue"),
+        props: (route) => ({ email: route.query.email }),
+      },
     ],
   },
   {

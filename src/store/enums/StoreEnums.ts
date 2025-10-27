@@ -13,6 +13,7 @@ enum Actions {
   FORGOT_PASSWORD = "auth/forgotPassword",
   SET_BREADCRUMB_ACTION = "setBreadcrumbAction",
   VERIFY_OTP = "auth/verify-otp",
+  RESET_PASSWORD = "auth/reset-password",
 }
 
 enum Mutations {

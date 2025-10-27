@@ -104,52 +104,26 @@ export default defineComponent({
       password: string;
     }) => {
       try {
-        // Ativa o indicador de carregamento
-        if (submitButton.value) {
-          submitButton.value.disabled = true;
-          submitButton.value.setAttribute("data-kt-indicator", "on");
-        }
-
-        // Executa o login via Vuex
         await store.dispatch(Actions.LOGIN, values);
+        // Se chegou aqui, login foi realmente bem-sucedido
+        await Swal.fire({
+          text: "Você fez login com sucesso!",
+          icon: "success",
+          confirmButtonText: "Ok, entendi!",
+        });
+        await router.push({ name: "dashboard" });
+      } catch (errors) {
+        console.log("Erros é:" + errors);
+        const message = Array.isArray(errors)
+          ? errors[0]
+          : typeof errors === "string"
+          ? errors
+          : "Email ou senha incorreto.";
 
-        // Captura erros (tratando diferentes formatos)
-        const error = store.getters.getErrors;
-        const hasError =
-          error &&
-          ((Array.isArray(error) && error.length > 0) ||
-            typeof error === "string");
-
-        if (!hasError) {
-          // Login bem-sucedido
-          await Swal.fire({
-            text: "Você fez login com sucesso!",
-            icon: "success",
-            confirmButtonText: "Ok, entendi!",
-          });
-
-          // Redireciona para o dashboard
-          await router.push({ name: "dashboard" });
-        } else {
-          // Mostra erro retornado
-          const message = Array.isArray(error)
-            ? error[0]
-            : typeof error === "string"
-            ? error
-            : "Erro desconhecido ao tentar logar. Tente novamente.";
-
-          Swal.fire({
-            text: message,
-            icon: "error",
-            confirmButtonText: "Tentar novamente!",
-          });
-        }
-      } catch (err: any) {
-        // Captura erros inesperados
         Swal.fire({
-          text: err?.message || "Erro inesperado ao tentar fazer login.",
+          text: message,
           icon: "error",
-          confirmButtonText: "Ok",
+          confirmButtonText: "Tentar novamente!",
         });
       } finally {
         // Remove o indicador de carregamento

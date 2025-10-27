@@ -20,7 +20,7 @@
           name="email"
           type="email"
           class="form-control form-control-solid"
-          placeholder="Enter your email"
+          placeholder="Informe seu e-mail"
           autocomplete="off"
         />
         <ErrorMessage name="email" class="text-danger mt-1" />
@@ -77,6 +77,7 @@ import * as Yup from "yup";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
+import router from "@/router";
 
 export default defineComponent({
   name: "verify-otp",
@@ -102,39 +103,37 @@ export default defineComponent({
       submitButton.value!.disabled = true;
       submitButton.value?.setAttribute("data-kt-indicator", "on");
 
-      // Chama a action para validar o OTP
-      await store.dispatch(Actions.VERIFY_OTP, values);
-
-      const [errorName] = Object.keys(store.getters.getErrors);
-      const error = store.getters.getErrors[errorName];
-
-      if (!error) {
-        Swal.fire({
-          text: "Code verified successfully!",
+      try {
+        await store.dispatch(Actions.VERIFY_OTP, values);
+        // Se chegou aqui, login foi realmente bem-sucedido
+        await Swal.fire({
+          text: "Código validado com sucesso!",
           icon: "success",
-          confirmButtonText: "Continue",
-          buttonsStyling: false,
-          customClass: {
-            confirmButton: "btn fw-bold btn-light-primary",
-          },
-        }).then(() => {
-          // Redireciona para redefinir senha
-          // (ajuste a rota conforme seu sistema)
+          confirmButtonText: "Ok, entendi!",
         });
-      } else {
-        Swal.fire({
-          text: error[0],
-          icon: "error",
-          confirmButtonText: "Try again",
-          buttonsStyling: false,
-          customClass: {
-            confirmButton: "btn fw-bold btn-light-danger",
-          },
+        await router.push({
+          name: "new-password",
+          query: { email: values.email, otp: values.otp },
         });
-      }
+      } catch (errors) {
+        const message = Array.isArray(errors)
+          ? errors[0]
+          : typeof errors === "string"
+          ? errors
+          : "Código ou email incorreto.";
 
-      submitButton.value?.removeAttribute("data-kt-indicator");
-      submitButton.value!.disabled = false;
+        Swal.fire({
+          text: message,
+          icon: "error",
+          confirmButtonText: "Tentar novamente!",
+        });
+      } finally {
+        // Remove o indicador de carregamento
+        if (submitButton.value) {
+          submitButton.value.disabled = false;
+          submitButton.value.removeAttribute("data-kt-indicator");
+        }
+      }
     };
 
     return {

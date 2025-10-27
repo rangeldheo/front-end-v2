@@ -11,12 +11,12 @@
       <!--begin::Heading-->
       <div class="text-center mb-10">
         <!--begin::Title-->
-        <h1 class="text-dark mb-3">Forgot Password ?</h1>
+        <h1 class="text-dark mb-3">Esqueceu a Senha?</h1>
         <!--end::Title-->
 
         <!--begin::Link-->
         <div class="text-gray-400 fw-bold fs-4">
-          Enter your email to reset your password.
+          Insira seu e-mail para redefinir sua senha.
         </div>
         <!--end::Link-->
       </div>
@@ -24,7 +24,7 @@
 
       <!--begin::Input group-->
       <div class="fv-row mb-10">
-        <label class="form-label fw-bolder text-gray-900 fs-6">Email</label>
+        <label class="form-label fw-bolder text-gray-900 fs-6">E-mail</label>
         <Field
           class="form-control form-control-solid"
           type="email"
@@ -48,9 +48,9 @@
           id="kt_password_reset_submit"
           class="btn btn-lg btn-primary fw-bolder me-4"
         >
-          <span class="indicator-label"> Submit </span>
+          <span class="indicator-label">Enviar</span>
           <span class="indicator-progress">
-            Please wait...
+            Por favor, aguarde...
             <span
               class="spinner-border spinner-border-sm align-middle ms-2"
             ></span>
@@ -58,9 +58,9 @@
         </button>
 
         <router-link
-          to="/sign-up"
+          to="/sign-in"
           class="btn btn-lg btn-light-primary fw-bolder"
-          >Cancel</router-link
+          >Cancelar</router-link
         >
       </div>
       <!--end::Actions-->
@@ -69,7 +69,6 @@
   </div>
   <!--end::Wrapper-->
 </template>
-
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { ErrorMessage, Field, Form } from "vee-validate";
@@ -91,20 +90,23 @@ export default defineComponent({
 
     const submitButton = ref<HTMLButtonElement | null>(null);
 
-    //Create form validation object
+    // Criar objeto de validação do formulário
     const forgotPassword = Yup.object().shape({
-      email: Yup.string().email().required().label("Email"),
+      email: Yup.string()
+        .email("E-mail inválido")
+        .required("E-mail é obrigatório")
+        .label("E-mail"),
     });
 
-    //Form submit function
+    // Função de envio do formulário
     const onSubmitForgotPassword = async (values) => {
       // eslint-disable-next-line
       submitButton.value!.disabled = true;
-      // Activate loading indicator
+      // Ativar indicador de carregamento
       submitButton.value?.setAttribute("data-kt-indicator", "on");
 
-      // dummy delay
-      // Send login request
+      // Atraso simulado
+      // Enviar solicitação de redefinição de senha
       await store.dispatch(Actions.FORGOT_PASSWORD, values);
 
       const [errorName] = Object.keys(store.getters.getErrors);
@@ -117,7 +119,7 @@ export default defineComponent({
           text: error[0],
           icon: "error",
           buttonsStyling: false,
-          confirmButtonText: "Try again!",
+          confirmButtonText: "Tente novamente!",
           customClass: {
             confirmButton: "btn fw-bold btn-light-danger",
           },
@@ -126,7 +128,7 @@ export default defineComponent({
 
       submitButton.value?.removeAttribute("data-kt-indicator");
       // eslint-disable-next-line
-        submitButton.value!.disabled = false;
+      submitButton.value!.disabled = false;
     };
 
     return {

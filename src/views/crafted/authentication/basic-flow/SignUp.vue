@@ -12,36 +12,25 @@
       <!--begin::Heading-->
       <div class="mb-10 text-center">
         <!--begin::Title-->
-        <h1 class="text-dark mb-3">Create an Account</h1>
+        <h1 class="text-dark mb-3">Criar uma Conta</h1>
         <!--end::Title-->
 
         <!--begin::Link-->
         <div class="text-gray-400 fw-bold fs-4">
-          Already have an account?
+          Já possui uma conta?
 
           <router-link to="/sign-in" class="link-primary fw-bolder">
-            Sign in here
+            Faça login aqui
           </router-link>
         </div>
         <!--end::Link-->
       </div>
       <!--end::Heading-->
 
-      <!--begin::Action-->
-      <button type="button" class="btn btn-light-primary fw-bolder w-100 mb-10">
-        <img
-          alt="Logo"
-          src="media/svg/brand-logos/google-icon.svg"
-          class="h-20px me-3"
-        />
-        Sign in with Google
-      </button>
-      <!--end::Action-->
-
       <!--begin::Separator-->
       <div class="d-flex align-items-center mb-10">
         <div class="border-bottom border-gray-300 mw-50 w-100"></div>
-        <span class="fw-bold text-gray-400 fs-7 mx-2">OR</span>
+        <span class="fw-bold text-gray-400 fs-7 mx-2">OU</span>
         <div class="border-bottom border-gray-300 mw-50 w-100"></div>
       </div>
       <!--end::Separator-->
@@ -50,7 +39,7 @@
       <div class="row fv-row mb-7">
         <!--begin::Col-->
         <div class="col-xl-6">
-          <label class="form-label fw-bolder text-dark fs-6">First Name</label>
+          <label class="form-label fw-bolder text-dark fs-6">Nome</label>
           <Field
             class="form-control form-control-lg form-control-solid"
             type="text"
@@ -68,7 +57,7 @@
 
         <!--begin::Col-->
         <div class="col-xl-6">
-          <label class="form-label fw-bolder text-dark fs-6">Last Name</label>
+          <label class="form-label fw-bolder text-dark fs-6">Sobrenome</label>
           <Field
             class="form-control form-control-lg form-control-solid"
             type="text"
@@ -88,7 +77,7 @@
 
       <!--begin::Input group-->
       <div class="fv-row mb-7">
-        <label class="form-label fw-bolder text-dark fs-6">Email</label>
+        <label class="form-label fw-bolder text-dark fs-6">E-mail</label>
         <Field
           class="form-control form-control-lg form-control-solid"
           type="email"
@@ -109,7 +98,7 @@
         <!--begin::Wrapper-->
         <div class="mb-1">
           <!--begin::Label-->
-          <label class="form-label fw-bolder text-dark fs-6"> Password </label>
+          <label class="form-label fw-bolder text-dark fs-6">Senha</label>
           <!--end::Label-->
 
           <!--begin::Input wrapper-->
@@ -151,7 +140,8 @@
         <!--end::Wrapper-->
         <!--begin::Hint-->
         <div class="text-muted">
-          Use 8 or more characters with a mix of letters, numbers & symbols.
+          Use 8 ou mais caracteres com uma combinação de letras, números e
+          símbolos.
         </div>
         <!--end::Hint-->
       </div>
@@ -160,7 +150,7 @@
       <!--begin::Input group-->
       <div class="fv-row mb-5">
         <label class="form-label fw-bolder text-dark fs-6"
-          >Confirm Password</label
+          >Confirmar Senha</label
         >
         <Field
           class="form-control form-control-lg form-control-solid"
@@ -187,8 +177,8 @@
             value="1"
           />
           <span class="form-check-label fw-bold text-gray-700 fs-6">
-            I Agree &
-            <a href="#" class="ms-1 link-primary">Terms and conditions</a>.
+            Eu Concordo com os
+            <a href="#" class="ms-1 link-primary">Termos e Condições</a>.
           </span>
         </label>
       </div>
@@ -202,9 +192,9 @@
           type="submit"
           class="btn btn-lg btn-primary"
         >
-          <span class="indicator-label"> Submit </span>
+          <span class="indicator-label">Enviar</span>
           <span class="indicator-progress">
-            Please wait...
+            Por favor, aguarde...
             <span
               class="spinner-border spinner-border-sm align-middle ms-2"
             ></span>
@@ -217,7 +207,6 @@
   </div>
   <!--end::Wrapper-->
 </template>
-
 <script lang="ts">
 import { defineComponent, ref, onMounted, nextTick } from "vue";
 import { ErrorMessage, Field, Form } from "vee-validate";
@@ -242,14 +231,20 @@ export default defineComponent({
     const submitButton = ref<HTMLButtonElement | null>(null);
 
     const registration = Yup.object().shape({
-      first_name: Yup.string().required().label("Name"),
-      last_name: Yup.string().required().label("Surname"),
-      email: Yup.string().min(4).required().email().label("Email"),
-      password: Yup.string().required().label("Password"),
+      first_name: Yup.string().required("Nome é obrigatório").label("Nome"),
+      last_name: Yup.string()
+        .required("Sobrenome é obrigatório")
+        .label("Sobrenome"),
+      email: Yup.string()
+        .min(4, "E-mail deve ter pelo menos 4 caracteres")
+        .required("E-mail é obrigatório")
+        .email("E-mail inválido")
+        .label("E-mail"),
+      password: Yup.string().required("Senha é obrigatória").label("Senha"),
       password_confirmation: Yup.string()
-        .required()
-        .oneOf([Yup.ref("password"), null], "Passwords must match")
-        .label("Password Confirmation"),
+        .required("Confirmação de senha é obrigatória")
+        .oneOf([Yup.ref("password"), null], "As senhas devem corresponder")
+        .label("Confirmação de Senha"),
     });
 
     onMounted(() => {
@@ -276,23 +271,23 @@ export default defineComponent({
 
       if (!error) {
         Swal.fire({
-          text: "You have successfully logged in!",
+          text: "Você se registrou com sucesso!",
           icon: "success",
           buttonsStyling: false,
-          confirmButtonText: "Ok, got it!",
+          confirmButtonText: "Ok, entendi!",
           customClass: {
             confirmButton: "btn fw-bold btn-light-primary",
           },
         }).then(function () {
           // Go to page after successfully login
-          router.push({ name: "dashboard" });
+          router.push({ name: "sign-in" });
         });
       } else {
         Swal.fire({
           text: error[0],
           icon: "error",
           buttonsStyling: false,
-          confirmButtonText: "Try again!",
+          confirmButtonText: "Tente novamente!",
           customClass: {
             confirmButton: "btn fw-bold btn-light-danger",
           },
